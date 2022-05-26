@@ -1,0 +1,10 @@
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="View duplication"
+        Width="350" ResizeMode="NoResize" SizeToContent="Height">
+    <StackPanel Margin="10">
+        <Label Content="How many times do you want to duplicate view?" Margin="0,0,0,10" />
+        <TextBox x:Name="textBox" Height="46" FontSize="18" FontWeight="Light" VerticalContentAlignment="Center" Padding="10,0,10,0"/>
+        <Button Content="Run!" Height="64" Margin="0,10,0,0" Click="duplication" />
+    </StackPanel>
+</Window>
