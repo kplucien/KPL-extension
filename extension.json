@@ -1,0 +1,14 @@
+{
+    "builtin": "False",
+    "default_enabled": "True",
+    "type": "extension",
+    "rocket_mode_compatible": "False",
+    "name": "PyRevit kamil",
+    "description": "Extensions for PyRevit",
+    "author": "Kamil Płuciennik",
+    "author_profile": "https://github.com/kplucien",
+    "url": "https://github.com/kplucien/KPL-extension.git",
+    "website": "https://github.com/kplucien",
+    "image": "",
+    "dependencies": []
+}
