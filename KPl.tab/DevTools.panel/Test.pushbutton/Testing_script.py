@@ -32,62 +32,39 @@ if len(selection):
 
 
 ##################################################
-new_curve = []
-room_center = []
-room_name = []
-room_number = []
+from rpw.ui.forms import SelectFromList
+links_all=FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_RvtLinks).WhereElementIsNotElementType().ToElements() 
+keys = []
+values = []
+dict  ={}
 
-def collector(category):
-	collect = FilteredElementCollector(doc, doc.ActiveView.Id).OfCategory(category).WhereElementIsNotElementType().ToElements()
-	return collect
-	
-wall_cat=BuiltInCategory.OST_Walls
-curtain_wall_mullion_cat = BuiltInCategory.OST_CurtainWallMullions
-rooms_cat = BuiltInCategory.OST_Rooms
+for i in links_all:
 
-tx = Transaction(doc, 'default')
+    keys.append(i.Name.ToString())
+    values.append(i)
+for j in range(len(keys)):
+    dict[keys[j]] = values[j]
+
+
+arch=SelectFromList('Select link which contains rooms', dict)
+link_doc = arch.GetLinkDocument()
+
+rooms_id = []
+rooms = FilteredElementCollector(link_doc).OfCategory(BuiltInCategory.OST_Rooms).WhereElementIsNotElementType().ToElements()
+from Autodesk.Revit.Creation import *
+v = doc.ActiveView
+tx = Transaction(doc, 'TagRoomFromLink')
+
+
 tx.Start()
+udany = []
 
-
-##########################################################################
-#Text note type creation start
-
-theight = 1.8 #mm
-txt_name = "wall_center_line_script"
-
-try:
-	text = FilteredElementCollector(doc).OfClass(TextNoteType).FirstElement()
-	nowy = text.Duplicate(txt_name)
-
-	txt_size = nowy.get_Parameter(BuiltInParameter.TEXT_SIZE)
-	txt_size.Set(theight/304.8)
-
-	txt_color = nowy.get_Parameter(BuiltInParameter.LINE_COLOR)
-	txt_color.Set(255)
-	txId = nowy.Id
-
-except:
-	txt_existing = FilteredElementCollector(doc).OfClass(TextNoteType).ToElements()
-	for y in txt_existing:
-		if y.LookupParameter("Type Name").AsString() == txt_name:
-			txId = y.Id
-""" 
-nowy.get_Parameter(BuiltInParameter.TEXT_FONT).AsDouble()
-nowy.get_Parameter(BuiltInParameter.LINE_COLOR).AsInteger()
-nowy.get_Parameter(BuiltInParameter.TEXT_SIZE).AsDouble() """
-
-#Text note type creation end
-#############################################
-
-
-rooms_collected = collector(rooms_cat)
-
-try:
-	for i in range(len(rooms_collected)):
-		room_center.append(rooms_collected[i].Location.Point)
-		room_name.append(rooms_collected[i].get_Parameter(BuiltInParameter.ROOM_NAME).AsString())
-		room_number.append(rooms_collected[i].get_Parameter(BuiltInParameter.ROOM_NUMBER).AsString())
-		TextNote.Create(doc, doc.ActiveView.Id, room_center[i], room_number[i]+':'+room_name[i], txId)
-except:
-	print'Something went wrong with placing text notes!'
+for v in selection:
+    for j in rooms:
+        try:
+            p1=UV(j.Location.Point.X, j.Location.Point.Y)
+            link_el_id = LinkElementId(arch.Id, j.Id)
+            udany.append(doc.Create.NewRoomTag(link_el_id, p1, v.Id))
+        except:
+            continue
 tx.Commit()

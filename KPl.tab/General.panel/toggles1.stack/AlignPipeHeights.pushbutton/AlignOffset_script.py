@@ -16,8 +16,8 @@ import rpw
 
 
 __doc__ = """Align pipes offset.
-Select first object to connect (pick a location close to the desired connector)
-Select second object to be connected (pick a location close to the desired connector)"""
+Select first object to be moved.
+Select second object which is on desired offset"""
 __title__ = "Align pipe heights"
 
 logger = script.get_logger()

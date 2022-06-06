@@ -1,4 +1,4 @@
 title: Wall center line
 #highlight: new
-tooltip: Create red center line in the center of the wall.
+tooltip: Create red center line in the center of the wall. Please note, some lines can be doubled. Tool "Overkill" from pyRevit can be used. Works only when arch/struc model is opened.
 author: Kamil Pluciennik
