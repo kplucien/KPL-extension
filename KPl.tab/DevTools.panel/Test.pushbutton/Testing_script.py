@@ -32,39 +32,24 @@ if len(selection):
 
 
 ##################################################
-from rpw.ui.forms import SelectFromList
-links_all=FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_RvtLinks).WhereElementIsNotElementType().ToElements() 
-keys = []
-values = []
-dict  ={}
-
-for i in links_all:
-
-    keys.append(i.Name.ToString())
-    values.append(i)
-for j in range(len(keys)):
-    dict[keys[j]] = values[j]
+from pyrevit import forms
+b = FilteredElementCollector(doc).OfClass(Family).WhereElementIsNotElementType().ToElements()
+a = FilteredElementCollector(doc).OfClass(FamilySymbol).WhereElementIsElementType().ToElements()
+families = []
+try:
+    for i in a:
+        families.append(i.Family) 
 
 
-arch=SelectFromList('Select link which contains rooms', dict)
-link_doc = arch.GetLinkDocument()
+    res = forms.SelectFromList.show(families,
+                                    multiselect=False,
+                                    name_attr='Name',
+                                    button_name='Select Family')
 
-rooms_id = []
-rooms = FilteredElementCollector(link_doc).OfCategory(BuiltInCategory.OST_Rooms).WhereElementIsNotElementType().ToElements()
-from Autodesk.Revit.Creation import *
-v = doc.ActiveView
-tx = Transaction(doc, 'TagRoomFromLink')
-
-
-tx.Start()
-udany = []
-
-for v in selection:
-    for j in rooms:
-        try:
-            p1=UV(j.Location.Point.X, j.Location.Point.Y)
-            link_el_id = LinkElementId(arch.Id, j.Id)
-            udany.append(doc.Create.NewRoomTag(link_el_id, p1, v.Id))
-        except:
-            continue
-tx.Commit()
+    for i in a:
+            if i.Family.Name == res.Name:
+                placefamily = i
+                break
+    uidoc.PromptForFamilyInstancePlacement(placefamily)
+except:
+    pass

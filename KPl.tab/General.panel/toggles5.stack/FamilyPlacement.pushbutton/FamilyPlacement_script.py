@@ -1,9 +1,3 @@
-__title__ = "Review dimension"
-__author__ = "Kamil Pluciennik"
-__doc__ = """Select dimensions and run this tool. All associated elements will be marked.
-"""
-__context__ = "Dimensions"
-
 import random
 import os
 import datetime
@@ -18,7 +12,9 @@ doc = __revit__.ActiveUIDocument.Document
 clr.AddReference("System")
 
 from System.Collections.Generic import List as cList
-
+from Autodesk.Revit.UI import TaskDialog
+from Autodesk.Revit.UI import UIApplication
+from Autodesk.Revit.UI.Selection import *
 
 def get_selected_elements(doc):
     """API change in Revit 2016 makes old method throw an error"""
@@ -34,29 +30,25 @@ selection = get_selected_elements(doc)
 if len(selection):
     s0 = selection[0]
 
-##########################################################################
-iden = []
-list = [] #clean list, without revit links
 
-for i in selection:
-    for s in range(i.References.Size):
-        iden.append(i.References[s].ElementId)
-
-##########################################################################
-
-#clear list, remove revit links from selection
-for k in iden:
-    Element = doc.GetElement(k)
-    if not Element.Category.Name=="RVT Links":
-        list.append(k)
-    else:
-        pass
-
-sel = cList[ElementId](list)
+##################################################
+from pyrevit import forms
+FamSymbols = FilteredElementCollector(doc).OfClass(FamilySymbol).WhereElementIsElementType().ToElements()
+families = []
 try:
+    for i in FamSymbols:
+        families.append(i.Family) 
 
-    uidoc.Selection.SetElementIds(sel)
+
+    res = forms.SelectFromList.show(families,
+                                    multiselect=False,
+                                    name_attr='Name',
+                                    button_name='Select Family')
+
+    for i in FamSymbols:
+            if i.Family.Name == res.Name:
+                placefamily = i
+                break
+    uidoc.PromptForFamilyInstancePlacement(placefamily)
 except:
     pass
-
-##########################################################################

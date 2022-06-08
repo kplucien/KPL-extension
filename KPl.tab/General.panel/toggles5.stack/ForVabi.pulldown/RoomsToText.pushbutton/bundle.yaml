@@ -2,3 +2,4 @@ title: Rooms to text
 #highlight: new
 tooltip: Create text RoomNumber:RoomName base on existing rooms.
 author: Kamil Pluciennik
+context: active-plan-view
