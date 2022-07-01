@@ -50,6 +50,14 @@ p = line.GetEndPoint(0)
 q = line.GetEndPoint(1)
 v = q - p
 
+if v.Z == 0:
+	pass
+else:
+	v = XYZ(v.X, v.Y, 0)
+
+
+v=XYZ(v.X, v.Y, 0) ##z = 0 for pipes with slope
+
 w = bb.Max.X - bb.Min.X
 d = bb.Max.Y - bb.Min.Y
 h = bb.Max.Z - bb.Min.Z
