@@ -55,9 +55,6 @@ if v.Z == 0:
 else:
 	v = XYZ(v.X, v.Y, 0)
 
-
-v=XYZ(v.X, v.Y, 0) ##z = 0 for pipes with slope
-
 w = bb.Max.X - bb.Min.X
 d = bb.Max.Y - bb.Min.Y
 h = bb.Max.Z - bb.Min.Z
