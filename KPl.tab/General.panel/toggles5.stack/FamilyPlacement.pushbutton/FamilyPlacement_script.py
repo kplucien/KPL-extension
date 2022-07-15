@@ -37,7 +37,7 @@ FamSymbols = FilteredElementCollector(doc).OfClass(FamilySymbol).WhereElementIsE
 families = []
 try:
     for i in FamSymbols:
-        families.append(i.Family) 
+        families.append(i) 
 
 
     res = forms.SelectFromList.show(families,
@@ -45,10 +45,9 @@ try:
                                     name_attr='Name',
                                     button_name='Select Family')
 
-    for i in FamSymbols:
-            if i.Family.Name == res.Name:
-                placefamily = i
-                break
-    uidoc.PromptForFamilyInstancePlacement(placefamily)
+
+    uidoc.PromptForFamilyInstancePlacement(res)
 except:
     pass
+
+#FamSymbols[0].get_Parameter(BuiltInParameter.SYMBOL_NAME_PARAM).AsString()

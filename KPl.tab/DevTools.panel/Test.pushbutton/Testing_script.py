@@ -32,24 +32,13 @@ if len(selection):
 
 
 ##################################################
-from pyrevit import forms
-b = FilteredElementCollector(doc).OfClass(Family).WhereElementIsNotElementType().ToElements()
-a = FilteredElementCollector(doc).OfClass(FamilySymbol).WhereElementIsElementType().ToElements()
-families = []
-try:
-    for i in a:
-        families.append(i.Family) 
+options = NavisworksExportOptions()
+options.ExportScope = NavisworksExportScope.View
+options.ExportLinks=True
+options.ExportRoomGeometry=False
+path = "C:\\Users\\KPlucien\\Desktop\\"
 
-
-    res = forms.SelectFromList.show(families,
-                                    multiselect=False,
-                                    name_attr='Name',
-                                    button_name='Select Family')
-
-    for i in a:
-            if i.Family.Name == res.Name:
-                placefamily = i
-                break
-    uidoc.PromptForFamilyInstancePlacement(placefamily)
-except:
-    pass
+for i in selection:
+	options.ViewId = i.Id
+	name = i.Name.ToString()+".nwc"
+	doc.Export(path, name, options)
